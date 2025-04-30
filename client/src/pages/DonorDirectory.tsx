@@ -78,7 +78,7 @@ const DonorDirectory: React.FC = () => {
                         <SelectValue placeholder="All Blood Groups" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Blood Groups</SelectItem>
+                        <SelectItem value="all">All Blood Groups</SelectItem>
                         <SelectItem value="A+">A+</SelectItem>
                         <SelectItem value="A-">A-</SelectItem>
                         <SelectItem value="B+">B+</SelectItem>
@@ -116,7 +116,7 @@ const DonorDirectory: React.FC = () => {
                         <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
                         <SelectItem value="available">Available Now</SelectItem>
                         <SelectItem value="unavailable">Currently Unavailable</SelectItem>
                       </SelectContent>
