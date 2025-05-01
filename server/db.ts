@@ -1,15 +1,43 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+// This file is kept for compatibility but no longer uses a PostgreSQL database
+// The application now uses CSV files for data storage
+
 import * as schema from "@shared/schema";
 
-neonConfig.webSocketConstructor = ws;
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
-
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Create dummy exports to maintain compatibility with existing code
+export const db = {
+  select: () => {
+    console.warn("Database queries are no longer used. Using CSV storage instead.");
+    return {
+      from: () => {
+        return {
+          where: () => [],
+          orderBy: () => []
+        };
+      }
+    };
+  },
+  insert: () => {
+    console.warn("Database queries are no longer used. Using CSV storage instead.");
+    return {
+      values: () => {
+        return {
+          returning: () => []
+        };
+      }
+    };
+  },
+  update: () => {
+    console.warn("Database queries are no longer used. Using CSV storage instead.");
+    return {
+      set: () => {
+        return {
+          where: () => {
+            return {
+              returning: () => []
+            };
+          }
+        };
+      }
+    };
+  }
+};

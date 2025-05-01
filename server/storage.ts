@@ -39,7 +39,7 @@ function objectToCSV(obj: any): string {
 // Parse CSV row to object with specified schema
 function csvRowToObject<T>(headers: string[], row: string): T {
   const values = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
-  const obj: any = {};
+  const obj: Record<string, any> = {};
   
   headers.forEach((header, index) => {
     let value = values[index] || '';
@@ -54,7 +54,8 @@ function csvRowToObject<T>(headers: string[], row: string): T {
     } else if (!isNaN(Number(value)) && value.trim() !== '') {
       obj[header] = Number(value);
     } else if (value.match(/^\d{4}-\d{2}-\d{2}/) && !isNaN(Date.parse(value))) {
-      obj[header] = new Date(value);
+      // In CSV storage, store dates as strings instead of Date objects
+      obj[header] = value;
     } else {
       obj[header] = value;
     }
@@ -732,8 +733,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Import the DatabaseStorage class
-import { DatabaseStorage } from './dbStorage';
+// We're no longer using the DatabaseStorage class
+// import { DatabaseStorage } from './dbStorage';
 
-// Use database storage instead of memory storage
-export const storage = new DatabaseStorage();
+// Use MemStorage for CSV file storage
+export const storage = new MemStorage();
