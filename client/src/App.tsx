@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 import DonorRegistration from "@/pages/DonorRegistration";
 import DonorDirectory from "@/pages/DonorDirectory";
 import RequestBlood from "@/pages/RequestBlood";
+import BloodFactDetail from "@/pages/BloodFactDetail";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/donor-registration" component={DonorRegistration} />
       <Route path="/donor-directory" component={DonorDirectory} />
       <Route path="/request-blood" component={RequestBlood} />
+      <Route path="/blood-facts/:slug" component={BloodFactDetail} />
       <Route component={NotFound} />
     </Switch>
   );

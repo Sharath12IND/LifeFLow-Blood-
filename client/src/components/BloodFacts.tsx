@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
 import { BloodFact } from '@shared/schema';
 
 const BloodFactCard: React.FC<{ fact: BloodFact }> = ({ fact }) => {
@@ -19,13 +20,13 @@ const BloodFactCard: React.FC<{ fact: BloodFact }> = ({ fact }) => {
       </div>
       <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
         <div className="text-sm">
-          <a 
+          <Link 
             href={fact.link || "#"} 
             className="inline-flex items-center font-medium text-red-600 hover:text-red-700 transition-colors"
           >
             Learn more 
             <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

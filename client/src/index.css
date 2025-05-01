@@ -94,6 +94,57 @@
       opacity: 0.8;
     }
   }
+  
+  /* Blood Facts Detail Page Tables */
+  .compatibility-table,
+  .usage-table {
+    @apply w-full my-6 border-collapse;
+  }
+  
+  .compatibility-table th,
+  .usage-table th {
+    @apply bg-red-50 text-red-900 font-semibold p-3 text-left border border-red-100;
+  }
+  
+  .compatibility-table td,
+  .usage-table td {
+    @apply p-3 border border-gray-200 text-gray-700;
+  }
+  
+  .compatibility-table tr:nth-child(even),
+  .usage-table tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  
+  .compatibility-table tr:hover,
+  .usage-table tr:hover {
+    @apply bg-red-50 transition-colors duration-200;
+  }
+  
+  /* Blood Facts Detail Page Prose Styles */
+  .prose h3 {
+    @apply text-2xl font-bold text-red-800 mt-8 mb-4;
+  }
+  
+  .prose h4 {
+    @apply text-xl font-semibold text-gray-800 mt-6 mb-3;
+  }
+  
+  .prose p {
+    @apply text-gray-700 my-3 leading-relaxed;
+  }
+  
+  .prose ul {
+    @apply list-disc pl-6 my-4 space-y-2;
+  }
+  
+  .prose li {
+    @apply text-gray-700;
+  }
+  
+  .prose strong {
+    @apply font-semibold text-red-700;
+  }
 }
 
 @layer utilities {
