@@ -334,8 +334,8 @@ const RequestBlood: React.FC = () => {
                   {matchingDonors.map((donor) => (
                     <div key={donor.id} className="blood-card bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
                       <div className="px-6 py-6 relative">
-                        <span className={`absolute right-4 top-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${donor.isAvailable ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
-                          {donor.isAvailable ? '🟢 Available' : '🔴 Unavailable'}
+                        <span className={`absolute right-4 top-4 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${donor.isAvailable ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                          {donor.isAvailable ? '🟢' : '🔴'} {donor.isAvailable ? 'Avail' : 'Unavail'}
                         </span>
                         <div className="flex items-center space-x-4">
                           <div className="flex-shrink-0 p-1">
@@ -347,8 +347,8 @@ const RequestBlood: React.FC = () => {
                           </div>
                         </div>
                         <div className="mt-5 flex justify-between items-center">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium shadow-sm ${donor.donationCount > 5 ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-blue-100 text-blue-800 border border-blue-200'}`}>
-                            {donor.donationCount > 10 ? 'Platinum Donor' : donor.donationCount > 5 ? 'Gold Donor' : donor.donationCount > 0 ? 'Regular Donor' : 'New Donor'}
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${donor.donationCount > 5 ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-blue-100 text-blue-800 border border-blue-200'}`}>
+                            {donor.donationCount > 10 ? 'Platinum' : donor.donationCount > 5 ? 'Gold' : donor.donationCount > 0 ? 'Regular' : 'New'}
                           </span>
                           <p className="text-sm text-gray-500">
                             <FaCalendarAlt className="inline mr-1" size={12} /> 
@@ -375,7 +375,7 @@ const RequestBlood: React.FC = () => {
                         <div className="flex justify-center gap-3">
                           <a 
                             href={`tel:${donor.contactNumber}`} 
-                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-32 justify-center ${donor.isAvailable ? 'text-white bg-red-600 hover:bg-red-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm transition-colors w-24 justify-center ${donor.isAvailable ? 'text-white bg-red-600 hover:bg-red-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
@@ -383,7 +383,7 @@ const RequestBlood: React.FC = () => {
                           </a>
                           <a 
                             href={`mailto:donor@example.com?subject=Blood%20Donation%20Request&body=Hello%20${encodeURIComponent(donor.isAnonymous ? 'Donor' : donor.fullName)},%0A%0AI%20am%20in%20need%20of%20${encodeURIComponent(donor.bloodGroup)}%20blood.%20Please%20contact%20me%20if%20you%20are%20available%20to%20donate.%0A%0AThank%20you.`} 
-                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-32 justify-center ${donor.isAvailable ? 'text-white bg-blue-600 hover:bg-blue-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm transition-colors w-24 justify-center ${donor.isAvailable ? 'text-white bg-blue-600 hover:bg-blue-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
@@ -432,7 +432,7 @@ const RequestBlood: React.FC = () => {
                 {bloodRequests.map((request) => (
                   <div key={request.id} className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
                     <div className="px-6 py-6 relative">
-                      <span className={`absolute right-4 top-4 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium shadow-sm ${getUrgencyBadgeClass(request.urgency)} border ${request.urgency === 'high' ? 'border-red-300' : request.urgency === 'medium' ? 'border-yellow-300' : 'border-green-300'}`}>
+                      <span className={`absolute right-4 top-4 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getUrgencyBadgeClass(request.urgency)} border ${request.urgency === 'high' ? 'border-red-300' : request.urgency === 'medium' ? 'border-yellow-300' : 'border-green-300'}`}>
                         {request.urgency.charAt(0).toUpperCase() + request.urgency.slice(1)}
                       </span>
                       <div className="flex items-center space-x-4">
@@ -458,13 +458,13 @@ const RequestBlood: React.FC = () => {
                       <div className="flex justify-center gap-3">
                         <a 
                           href={`tel:${request.contactNumber}`} 
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-red-600 hover:bg-red-700"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm transition-colors w-24 justify-center text-white bg-red-600 hover:bg-red-700"
                         >
                           <FaPhone className="mr-1" size={12} /> Call
                         </a>
                         <a 
                           href={`https://wa.me/${typeof request.contactNumber === 'string' ? request.contactNumber.replace(/\D/g, '') : request.contactNumber}`} 
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-green-600 hover:bg-green-700"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm transition-colors w-24 justify-center text-white bg-green-600 hover:bg-green-700"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -473,7 +473,7 @@ const RequestBlood: React.FC = () => {
                         <button 
                           type="button" 
                           onClick={() => fulfillRequest.mutate(request.id)}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-blue-600 hover:bg-blue-700"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm transition-colors w-24 justify-center text-white bg-blue-600 hover:bg-blue-700"
                         >
                           <FaCheck className="mr-1" size={12} /> Fulfilled
                         </button>
