@@ -374,9 +374,13 @@ export class MemStorage implements IStorage {
     
     // Add dummy donors if we have fewer than 10 donors total
     if (this.donors.size < 10) {
-    
-    // Otherwise initialize with dummy donors
-    const dummyDonors: InsertDonor[] = [
+      // Clear existing donors file if we're going to add dummy data
+      if (existingDonors.length > 0) {
+        await writeCSV(DONORS_CSV_PATH, []);
+      }
+      
+      // Initialize with dummy donors
+      const dummyDonors: InsertDonor[] = [
       {
         fullName: "John Smith",
         age: 28,

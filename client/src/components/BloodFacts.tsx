@@ -7,6 +7,20 @@ const BloodFactCard: React.FC<{ fact: BloodFact }> = ({ fact }) => {
   // Set default icon if not provided
   const icon = fact.icon || "tint";
   
+  // Create slug for blood fact detail page
+  const getSlug = () => {
+    const slugs: Record<string, string> = {
+      "Blood Types Compatibility": "compatibility",
+      "Donation Intervals": "intervals",
+      "Health Benefits": "benefits",
+      "Eligibility Requirements": "eligibility",
+      "The Donation Process": "process",
+      "Blood Usage Statistics": "statistics"
+    };
+    
+    return slugs[fact.title] || "compatibility";
+  };
+  
   return (
     <div className="blood-card bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
       <div className="px-6 py-6">
@@ -15,13 +29,13 @@ const BloodFactCard: React.FC<{ fact: BloodFact }> = ({ fact }) => {
         </div>
         <h3 className="text-xl leading-6 font-semibold text-gray-900 mb-3">{fact.title}</h3>
         <p className="mt-2 text-base text-gray-600 leading-relaxed">
-          {fact.content}
+          {fact.content.substring(0, 150)}...
         </p>
       </div>
       <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
         <div className="text-sm">
           <Link 
-            href={fact.link || "#"} 
+            href={`/blood-facts/${getSlug()}`} 
             className="inline-flex items-center font-medium text-red-600 hover:text-red-700 transition-colors"
           >
             Learn more 
