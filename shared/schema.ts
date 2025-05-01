@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, date } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -23,12 +23,12 @@ export const donors = pgTable("donors", {
   city: text("city").notNull(),
   pincode: text("pincode").notNull(),
   contactNumber: text("contact_number").notNull(),
-  lastDonationDate: date("last_donation_date"),
+  lastDonationDate: text("last_donation_date"),
   healthCondition: text("health_condition").notNull(),
   isAvailable: boolean("is_available").notNull().default(true),
   isAnonymous: boolean("is_anonymous").notNull().default(false),
   donationCount: integer("donation_count").notNull().default(0),
-  createdAt: date("created_at").notNull().default(new Date()),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertDonorSchema = createInsertSchema(donors).omit({
@@ -47,7 +47,7 @@ export const bloodRequests = pgTable("blood_requests", {
   urgency: text("urgency").notNull(), // Low, Medium, High
   additionalInfo: text("additional_info"),
   isFulfilled: boolean("is_fulfilled").notNull().default(false),
-  createdAt: date("created_at").notNull().default(new Date()),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertBloodRequestSchema = createInsertSchema(bloodRequests).omit({
@@ -62,7 +62,7 @@ export const emergencyAlerts = pgTable("emergency_alerts", {
   message: text("message").notNull(),
   contactNumber: text("contact_number"),
   isActive: boolean("is_active").notNull().default(true),
-  createdAt: date("created_at").notNull().default(new Date()),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertEmergencyAlertSchema = createInsertSchema(emergencyAlerts).omit({
@@ -77,7 +77,7 @@ export const bloodFacts = pgTable("blood_facts", {
   content: text("content").notNull(),
   icon: text("icon").notNull(),
   link: text("link"),
-  createdAt: date("created_at").notNull().default(new Date()),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertBloodFactSchema = createInsertSchema(bloodFacts).omit({
