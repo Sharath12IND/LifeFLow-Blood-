@@ -33,11 +33,20 @@ const RequestBlood: React.FC = () => {
   const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('');
   const [submittedForm, setSubmittedForm] = useState<boolean>(false);
   
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  
   const { data: bloodRequests = [], isLoading, refetch } = useQuery<BloodRequest[]>({
     queryKey: ['/api/blood-requests/active'],
     refetchOnWindowFocus: true,
     refetchInterval: 5000, // Auto-refresh every 5 seconds
   });
+  
+  // Manual refresh function with visual indicator
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
   
   // Query to fetch donors matching the selected blood group
   const { data: matchingDonors = [], isLoading: isLoadingDonors } = useQuery<Donor[]>({
@@ -389,8 +398,28 @@ const RequestBlood: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-12">
-            <h3 className="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-gray-800">Current Blood Requests</h3>
+          <div className="mt-12 bg-white py-8 px-4 shadow-lg sm:rounded-xl border border-gray-100 sm:px-10">
+            <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-800">Current Blood Requests</h3>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleRefresh}
+                className="text-sm flex items-center"
+                disabled={isRefreshing}
+              >
+                {isRefreshing ? (
+                  <>
+                    <span className="animate-spin mr-1 h-3 w-3 border border-current border-t-transparent rounded-full"></span>
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <FaCalendarAlt className="mr-1 h-3 w-3" /> Refresh List
+                  </>
+                )}
+              </Button>
+            </div>
             
             {isLoading ? (
               <div className="mt-6 flex justify-center">

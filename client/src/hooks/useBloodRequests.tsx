@@ -7,6 +7,9 @@ export function useBloodRequests(active: boolean = true) {
   
   return useQuery<BloodRequest[]>({
     queryKey: [endpoint],
+    refetchOnWindowFocus: true,
+    refetchInterval: 10000, // Auto-refresh every 10 seconds
+    staleTime: 5000, // Consider data stale after 5 seconds
   });
 }
 
