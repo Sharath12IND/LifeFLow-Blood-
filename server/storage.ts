@@ -202,9 +202,10 @@ export class MemStorage implements IStorage {
     this.emergencyAlertId = 1;
     this.bloodFactId = 1;
     
-    // Initialize with some default blood facts
+    // Initialize with some default blood facts and emergency alerts
     this.initializeBloodFacts();
     this.initializeEmergencyAlerts();
+    this.initializeDummyDonors();
     
     // Load data from CSV files if they exist
     this.loadData();
@@ -320,6 +321,156 @@ export class MemStorage implements IStorage {
         createdAt: new Date(),
       };
       this.emergencyAlerts.set(id, newAlert);
+    });
+  }
+  
+  private initializeDummyDonors() {
+    // Only add dummy donors if none exist
+    if (this.donors.size > 0) {
+      return;
+    }
+    
+    const dummyDonors: InsertDonor[] = [
+      {
+        fullName: "John Smith",
+        age: 28,
+        bloodGroup: "O+",
+        city: "New York",
+        pincode: "10001",
+        contactNumber: "123-456-7890",
+        lastDonationDate: new Date(2022, 11, 15),
+        healthCondition: "excellent",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 5
+      },
+      {
+        fullName: "Emma Johnson",
+        age: 32,
+        bloodGroup: "A-",
+        city: "Los Angeles",
+        pincode: "90001",
+        contactNumber: "213-555-1234",
+        lastDonationDate: new Date(2023, 2, 10),
+        healthCondition: "good",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 3
+      },
+      {
+        fullName: "Michael Williams",
+        age: 45,
+        bloodGroup: "B+",
+        city: "Chicago",
+        pincode: "60601",
+        contactNumber: "312-555-6789",
+        lastDonationDate: new Date(2023, 4, 22),
+        healthCondition: "good",
+        isAvailable: false,
+        isAnonymous: false,
+        donationCount: 12
+      },
+      {
+        fullName: "Jennifer Brown",
+        age: 29,
+        bloodGroup: "AB+",
+        city: "Houston",
+        pincode: "77001",
+        contactNumber: "832-555-4321",
+        lastDonationDate: new Date(2023, 1, 5),
+        healthCondition: "excellent",
+        isAvailable: true,
+        isAnonymous: true,
+        donationCount: 2
+      },
+      {
+        fullName: "David Jones",
+        age: 38,
+        bloodGroup: "O-",
+        city: "Phoenix",
+        pincode: "85001",
+        contactNumber: "602-555-8765",
+        lastDonationDate: new Date(2022, 9, 30),
+        healthCondition: "good",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 8
+      },
+      {
+        fullName: "Sarah Garcia",
+        age: 26,
+        bloodGroup: "A+",
+        city: "Philadelphia",
+        pincode: "19019",
+        contactNumber: "215-555-2468",
+        lastDonationDate: new Date(2023, 5, 12),
+        healthCondition: "excellent",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 4
+      },
+      {
+        fullName: "Thomas Martinez",
+        age: 41,
+        bloodGroup: "B-",
+        city: "San Antonio",
+        pincode: "78201",
+        contactNumber: "210-555-1357",
+        lastDonationDate: new Date(2022, 7, 18),
+        healthCondition: "good",
+        isAvailable: false,
+        isAnonymous: false,
+        donationCount: 6
+      },
+      {
+        fullName: "Jessica Robinson",
+        age: 33,
+        bloodGroup: "AB-",
+        city: "San Diego",
+        pincode: "92101",
+        contactNumber: "619-555-3690",
+        lastDonationDate: null,
+        healthCondition: "excellent",
+        isAvailable: true,
+        isAnonymous: true,
+        donationCount: 0
+      },
+      {
+        fullName: "Daniel Clark",
+        age: 35,
+        bloodGroup: "O+",
+        city: "Dallas",
+        pincode: "75201",
+        contactNumber: "469-555-7531",
+        lastDonationDate: new Date(2023, 3, 25),
+        healthCondition: "good",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 7
+      },
+      {
+        fullName: "Ashley Rodriguez",
+        age: 27,
+        bloodGroup: "A+",
+        city: "San Jose",
+        pincode: "95101",
+        contactNumber: "408-555-8642",
+        lastDonationDate: new Date(2023, 0, 8),
+        healthCondition: "excellent",
+        isAvailable: true,
+        isAnonymous: false,
+        donationCount: 1
+      }
+    ];
+    
+    dummyDonors.forEach(donor => {
+      const id = this.donorId++;
+      const newDonor: Donor = {
+        ...donor,
+        id,
+        createdAt: new Date()
+      };
+      this.donors.set(id, newDonor);
     });
   }
   
