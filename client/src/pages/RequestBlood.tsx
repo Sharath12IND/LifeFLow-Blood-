@@ -259,59 +259,71 @@ const RequestBlood: React.FC = () => {
               <div>
                 <Button
                   type="submit"
-                  className="w-full py-3 px-4"
+                  className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium shadow-md transition-all"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Blood Request'}
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                      <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                      Submitting...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <i className="fas fa-heartbeat mr-2"></i> Submit Blood Request
+                    </span>
+                  )}
                 </Button>
               </div>
             </form>
           </div>
 
           <div className="mt-12">
-            <h3 className="text-lg font-medium text-gray-900">Current Blood Requests</h3>
+            <h3 className="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-gray-800">Current Blood Requests</h3>
             
             {isLoading ? (
               <div className="mt-6 flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
               </div>
             ) : bloodRequests.length === 0 ? (
-              <p className="mt-4 text-gray-500">No active blood requests at the moment.</p>
+              <p className="mt-4 text-gray-500 text-center py-8">No active blood requests at the moment.</p>
             ) : (
               <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {bloodRequests.map((request) => (
-                  <div key={request.id} className="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
-                    <div className="px-6 py-5 relative">
-                      <span className={`absolute right-6 top-5 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getUrgencyBadgeClass(request.urgency)}`}>
+                  <div key={request.id} className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
+                    <div className="px-6 py-6 relative">
+                      <span className={`absolute right-4 top-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${getUrgencyBadgeClass(request.urgency)} border ${request.urgency === 'high' ? 'border-red-200' : request.urgency === 'medium' ? 'border-yellow-200' : 'border-green-200'}`}>
                         {request.urgency.charAt(0).toUpperCase() + request.urgency.slice(1)} Urgency
                       </span>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-shrink-0">
-                          <BloodDropLogo size="lg" bloodType={request.bloodGroup} />
+                      <div className="flex items-center space-x-4">
+                        <div className="flex-shrink-0 p-1">
+                          <BloodDropLogo size="lg" bloodType={request.bloodGroup} animated={request.urgency === 'high'} />
                         </div>
                         <div>
-                          <h3 className="text-lg leading-6 font-medium text-gray-900">{request.patientName}</h3>
-                          <p className="text-sm text-gray-500">{request.hospitalName}, {request.hospitalLocation}</p>
+                          <h3 className="text-xl leading-6 font-semibold text-gray-900">{request.patientName}</h3>
+                          <p className="text-sm text-gray-500 mt-1"><i className="fas fa-hospital mr-1"></i> {request.hospitalName}, {request.hospitalLocation}</p>
                         </div>
                       </div>
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-500">{formatCreationDate(request.createdAt)}</p>
+                      <div className="mt-5">
+                        <p className="text-sm text-gray-600"><i className="far fa-calendar-alt mr-1"></i> {formatCreationDate(request.createdAt)}</p>
+                        
                         {request.additionalInfo && (
-                          <p className="mt-1 text-sm text-gray-500">{request.additionalInfo}</p>
+                          <div className="mt-3 p-3 bg-gray-50 rounded-md border border-gray-100">
+                            <p className="text-sm text-gray-600"><i className="fas fa-info-circle mr-1"></i> <span className="font-medium">Additional Info:</span> {request.additionalInfo}</p>
+                          </div>
                         )}
                       </div>
                     </div>
-                    <div className="px-6 py-4">
+                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
                       <div className="flex justify-between">
                         <a 
                           href={`tel:${request.contactNumber}`} 
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-red-600 hover:bg-red-700"
                         >
                           <i className="fas fa-phone-alt mr-1"></i> Call
                         </a>
                         <a 
                           href={`https://wa.me/${typeof request.contactNumber === 'string' ? request.contactNumber.replace(/\D/g, '') : request.contactNumber}`} 
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-green-600 hover:bg-green-700"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -320,9 +332,9 @@ const RequestBlood: React.FC = () => {
                         <button 
                           type="button" 
                           onClick={() => fulfillRequest.mutate(request.id)}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-blue-600 hover:bg-blue-700"
                         >
-                          <i className="fas fa-check mr-1"></i> Mark Fulfilled
+                          <i className="fas fa-check mr-1"></i> Fulfilled
                         </button>
                       </div>
                     </div>

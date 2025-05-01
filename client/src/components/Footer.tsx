@@ -8,11 +8,11 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">
-            <Link href="/">
-              <a className="flex items-center">
+            <div className="flex">
+              <Link href="/" className="flex items-center">
                 <BloodDropLogo withText size="md" className="bg-primary-600" />
-              </a>
-            </Link>
+              </Link>
+            </div>
             <p className="text-gray-300 text-base">
               Connecting blood donors with those in need, saving lives one donation at a time.
             </p>
@@ -70,24 +70,18 @@ const Footer: React.FC = () => {
                 </h3>
                 <ul className="mt-4 space-y-4">
                   <li>
-                    <Link href="/donor-directory">
-                      <a className="text-base text-gray-400 hover:text-gray-300">
-                        Find Donors
-                      </a>
+                    <Link href="/donor-directory" className="text-base text-gray-400 hover:text-gray-300">
+                      Find Donors
                     </Link>
                   </li>
                   <li>
-                    <Link href="/request-blood">
-                      <a className="text-base text-gray-400 hover:text-gray-300">
-                        Request Blood
-                      </a>
+                    <Link href="/request-blood" className="text-base text-gray-400 hover:text-gray-300">
+                      Request Blood
                     </Link>
                   </li>
                   <li>
-                    <Link href="/donor-registration">
-                      <a className="text-base text-gray-400 hover:text-gray-300">
-                        Donor Registration
-                      </a>
+                    <Link href="/donor-registration" className="text-base text-gray-400 hover:text-gray-300">
+                      Donor Registration
                     </Link>
                   </li>
                   <li>
