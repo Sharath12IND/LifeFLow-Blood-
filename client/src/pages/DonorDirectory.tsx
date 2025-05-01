@@ -45,8 +45,21 @@ const DonorDirectory: React.FC = () => {
   // Helper function to format the last donation date
   const formatLastDonation = (date: Date | string | null | undefined): string => {
     if (!date) return 'No previous donations';
-    const donationDate = typeof date === 'string' ? new Date(date) : date;
-    return `Last donated: ${formatDistance(donationDate, new Date(), { addSuffix: true })}`;
+    
+    try {
+      // Try to parse the date safely
+      const donationDate = typeof date === 'string' ? new Date(date) : date;
+      
+      // Check if date is valid before formatting
+      if (isNaN(donationDate.getTime())) {
+        return 'No previous donations';
+      }
+      
+      return `Last donated: ${formatDistance(donationDate, new Date(), { addSuffix: true })}`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return 'No previous donations';
+    }
   };
   
   return (

@@ -128,8 +128,19 @@ const RequestBlood: React.FC = () => {
   
   // Helper function to format the creation date
   const formatCreationDate = (date: Date | string): string => {
-    const dateObj = date instanceof Date ? date : new Date(date);
-    return `Posted: ${formatDistance(dateObj, new Date(), { addSuffix: true })}`;
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      
+      // Check if date is valid before formatting
+      if (isNaN(dateObj.getTime())) {
+        return 'Posted recently';
+      }
+      
+      return `Posted: ${formatDistance(dateObj, new Date(), { addSuffix: true })}`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return 'Posted recently';
+    }
   };
   
   return (
@@ -327,7 +338,16 @@ const RequestBlood: React.FC = () => {
                           <p className="text-sm text-gray-500">
                             <i className="far fa-calendar-alt mr-1"></i> 
                             {donor.lastDonationDate 
-                              ? `Last donated: ${formatDistance(new Date(donor.lastDonationDate), new Date(), { addSuffix: true })}` 
+                              ? (() => {
+                                  try {
+                                    const donationDate = new Date(donor.lastDonationDate);
+                                    return isNaN(donationDate.getTime()) 
+                                      ? 'No previous donations'
+                                      : `Last donated: ${formatDistance(donationDate, new Date(), { addSuffix: true })}`;
+                                  } catch (e) {
+                                    return 'No previous donations';
+                                  }
+                                })() 
                               : 'No previous donations'}
                           </p>
                         </div>
