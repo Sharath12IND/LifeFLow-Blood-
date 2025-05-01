@@ -33,8 +33,10 @@ const RequestBlood: React.FC = () => {
   const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('');
   const [submittedForm, setSubmittedForm] = useState<boolean>(false);
   
-  const { data: bloodRequests = [], isLoading } = useQuery<BloodRequest[]>({
+  const { data: bloodRequests = [], isLoading, refetch } = useQuery<BloodRequest[]>({
     queryKey: ['/api/blood-requests/active'],
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000, // Auto-refresh every 5 seconds
   });
   
   // Query to fetch donors matching the selected blood group
@@ -71,9 +73,12 @@ const RequestBlood: React.FC = () => {
       // Don't reset the form yet so the blood group selection remains
       // We'll keep submittedForm true to display matching donors
       
-      // Invalidate queries to refresh blood requests list
-      queryClient.invalidateQueries({ queryKey: ['/api/blood-requests/active'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/donors/filter'] });
+      // Force a refresh of the data
+      setTimeout(() => {
+        // Invalidate queries to refresh blood requests list
+        queryClient.invalidateQueries({ queryKey: ['/api/blood-requests/active'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/donors/filter'] });
+      }, 300); // Small delay to ensure the database has time to process
     },
     onError: (error) => {
       toast({
