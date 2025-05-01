@@ -42,42 +42,36 @@ export class DatabaseStorage implements IStorage {
         content: "O- is the universal donor and AB+ is the universal recipient. Learn about other compatibilities.",
         icon: "tint",
         link: "/blood-facts/compatibility",
-        createdAt: new Date(),
       },
       {
         title: "Donation Intervals",
         content: "Most donors can give blood every 56 days. Platelet donors can donate more frequently.",
         icon: "calendar-alt",
         link: "/blood-facts/intervals",
-        createdAt: new Date(),
       },
       {
         title: "Health Benefits",
         content: "Regular blood donation can reduce the risk of heart disease and help in maintaining iron levels.",
         icon: "heartbeat",
         link: "/blood-facts/benefits",
-        createdAt: new Date(),
       },
       {
         title: "Eligibility Requirements",
         content: "Learn about the age, weight, and health requirements for donating blood.",
         icon: "question-circle",
         link: "/blood-facts/eligibility",
-        createdAt: new Date(),
       },
       {
         title: "Donation Process",
         content: "What to expect during a blood donation session, from registration to recovery.",
         icon: "procedures",
         link: "/blood-facts/process",
-        createdAt: new Date(),
       },
       {
         title: "Blood Usage Statistics",
         content: "Learn how donated blood is used and why continued donations are crucial.",
         icon: "chart-pie",
         link: "/blood-facts/statistics",
-        createdAt: new Date(),
       },
     ];
     
@@ -92,7 +86,6 @@ export class DatabaseStorage implements IStorage {
         message: "URGENT NEED: O-negative blood required at City Hospital. Contact: +1-234-567-8901",
         contactNumber: "+1-234-567-8901",
         isActive: true,
-        createdAt: new Date(),
       }
     ];
     
@@ -110,12 +103,11 @@ export class DatabaseStorage implements IStorage {
         city: "New York",
         pincode: "10001",
         contactNumber: "123-456-7890",
-        lastDonationDate: new Date(2022, 11, 15),
+        lastDonationDate: "2022-12-15",
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: false,
         donationCount: 5,
-        createdAt: new Date(),
       },
       {
         fullName: "Emma Johnson",
@@ -124,12 +116,11 @@ export class DatabaseStorage implements IStorage {
         city: "Los Angeles",
         pincode: "90001",
         contactNumber: "213-555-1234",
-        lastDonationDate: new Date(2023, 2, 10),
+        lastDonationDate: "2023-03-10",
         healthCondition: "good",
         isAvailable: true,
         isAnonymous: false,
         donationCount: 3,
-        createdAt: new Date(),
       },
       {
         fullName: "Michael Williams",
@@ -138,12 +129,11 @@ export class DatabaseStorage implements IStorage {
         city: "Chicago",
         pincode: "60601",
         contactNumber: "312-555-6789",
-        lastDonationDate: new Date(2023, 4, 22),
+        lastDonationDate: "2023-05-22",
         healthCondition: "good",
         isAvailable: false,
         isAnonymous: false,
         donationCount: 12,
-        createdAt: new Date(),
       },
       {
         fullName: "Jennifer Brown",
@@ -152,12 +142,11 @@ export class DatabaseStorage implements IStorage {
         city: "Houston",
         pincode: "77001",
         contactNumber: "832-555-4321",
-        lastDonationDate: new Date(2023, 1, 5),
+        lastDonationDate: "2023-02-05",
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: true,
         donationCount: 2,
-        createdAt: new Date(),
       },
       {
         fullName: "David Jones",
@@ -166,12 +155,11 @@ export class DatabaseStorage implements IStorage {
         city: "Phoenix",
         pincode: "85001",
         contactNumber: "602-555-8765",
-        lastDonationDate: new Date(2022, 9, 30),
+        lastDonationDate: "2022-10-30",
         healthCondition: "good",
         isAvailable: true,
         isAnonymous: false,
         donationCount: 8,
-        createdAt: new Date(),
       }
     ];
     
@@ -190,7 +178,6 @@ export class DatabaseStorage implements IStorage {
       urgency: "high",
       additionalInfo: "Need blood for surgery scheduled for tomorrow morning",
       isFulfilled: false,
-      createdAt: new Date(),
     };
     
     await db.insert(bloodRequests).values(bloodRequestData);
@@ -237,10 +224,7 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createDonor(insertDonor: InsertDonor): Promise<Donor> {
-    const result = await db.insert(donors).values({
-      ...insertDonor,
-      createdAt: new Date(),
-    }).returning();
+    const result = await db.insert(donors).values(insertDonor).returning();
     return result[0];
   }
   
@@ -275,8 +259,7 @@ export class DatabaseStorage implements IStorage {
     const requestData = {
       ...insertRequest,
       additionalInfo: insertRequest.additionalInfo || null,
-      isFulfilled: false,
-      createdAt: new Date(),
+      isFulfilled: false
     };
     
     const result = await db.insert(bloodRequests).values(requestData).returning();
@@ -301,12 +284,7 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createEmergencyAlert(insertAlert: InsertEmergencyAlert): Promise<EmergencyAlert> {
-    const alertData = {
-      ...insertAlert,
-      createdAt: new Date(),
-    };
-    
-    const result = await db.insert(emergencyAlerts).values(alertData).returning();
+    const result = await db.insert(emergencyAlerts).values(insertAlert).returning();
     return result[0];
   }
   
@@ -316,12 +294,7 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createBloodFact(insertFact: InsertBloodFact): Promise<BloodFact> {
-    const factData = {
-      ...insertFact,
-      createdAt: new Date(),
-    };
-    
-    const result = await db.insert(bloodFacts).values(factData).returning();
+    const result = await db.insert(bloodFacts).values(insertFact).returning();
     return result[0];
   }
 }

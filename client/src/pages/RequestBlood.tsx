@@ -398,7 +398,7 @@ const RequestBlood: React.FC = () => {
                 {bloodRequests.map((request) => (
                   <div key={request.id} className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
                     <div className="px-6 py-6 relative">
-                      <span className={`absolute right-4 top-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${getUrgencyBadgeClass(request.urgency)} border ${request.urgency === 'high' ? 'border-red-200' : request.urgency === 'medium' ? 'border-yellow-200' : 'border-green-200'}`}>
+                      <span className={`absolute right-4 top-4 inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-md ${getUrgencyBadgeClass(request.urgency)} border-2 ${request.urgency === 'high' ? 'border-red-300' : request.urgency === 'medium' ? 'border-yellow-300' : 'border-green-300'}`}>
                         {request.urgency.charAt(0).toUpperCase() + request.urgency.slice(1)} Urgency
                       </span>
                       <div className="flex items-center space-x-4">
