@@ -407,7 +407,7 @@ const RequestBlood: React.FC = () => {
                         </div>
                         <div>
                           <h3 className="text-xl leading-6 font-semibold text-gray-900">{request.patientName}</h3>
-                          <p className="text-sm text-gray-500 mt-1"><i className="fas fa-hospital mr-1"></i> {request.hospitalName}, {request.hospitalLocation}</p>
+                          <p className="text-sm text-gray-500 mt-1"><FaHospital className="inline mr-1" size={12} /> {request.hospitalName}, {request.hospitalLocation}</p>
                         </div>
                       </div>
                       <div className="mt-5">
@@ -415,7 +415,7 @@ const RequestBlood: React.FC = () => {
                         
                         {request.additionalInfo && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-md border border-gray-100">
-                            <p className="text-sm text-gray-600"><i className="fas fa-info-circle mr-1"></i> <span className="font-medium">Additional Info:</span> {request.additionalInfo}</p>
+                            <p className="text-sm text-gray-600"><FaInfoCircle className="inline mr-1" size={12} /> <span className="font-medium">Additional Info:</span> {request.additionalInfo}</p>
                           </div>
                         )}
                       </div>
@@ -426,7 +426,7 @@ const RequestBlood: React.FC = () => {
                           href={`tel:${request.contactNumber}`} 
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-red-600 hover:bg-red-700"
                         >
-                          <i className="fas fa-phone-alt mr-1"></i> Call
+                          <FaPhone className="mr-1" size={12} /> Call
                         </a>
                         <a 
                           href={`https://wa.me/${typeof request.contactNumber === 'string' ? request.contactNumber.replace(/\D/g, '') : request.contactNumber}`} 
@@ -441,7 +441,7 @@ const RequestBlood: React.FC = () => {
                           onClick={() => fulfillRequest.mutate(request.id)}
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-blue-600 hover:bg-blue-700"
                         >
-                          <i className="fas fa-check mr-1"></i> Fulfilled
+                          <FaCheck className="mr-1" size={12} /> Fulfilled
                         </button>
                       </div>
                     </div>
