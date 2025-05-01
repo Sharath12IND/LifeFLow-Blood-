@@ -253,7 +253,21 @@ export class MemStorage implements IStorage {
     }
   }
   
-  private initializeBloodFacts() {
+  private async initializeBloodFacts() {
+    // Check if blood facts already exist in the database
+    const existingFacts = await readCSV<BloodFact>(BLOOD_FACTS_CSV_PATH);
+    if (existingFacts.length > 0) {
+      // If we have facts in the CSV, load those instead
+      existingFacts.forEach(fact => {
+        this.bloodFacts.set(fact.id, fact);
+        if (fact.id >= this.bloodFactId) {
+          this.bloodFactId = fact.id + 1;
+        }
+      });
+      return;
+    }
+    
+    // Otherwise initialize with default facts
     const facts: InsertBloodFact[] = [
       {
         title: "Blood Types Compatibility",
@@ -293,18 +307,35 @@ export class MemStorage implements IStorage {
       },
     ];
     
-    facts.forEach(fact => {
+    for (const fact of facts) {
       const id = this.bloodFactId++;
       const newFact: BloodFact = {
         ...fact,
         id,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(), // Convert Date to string
       };
       this.bloodFacts.set(id, newFact);
-    });
+      
+      // Save to CSV
+      await appendToCSV(BLOOD_FACTS_CSV_PATH, newFact);
+    }
   }
   
-  private initializeEmergencyAlerts() {
+  private async initializeEmergencyAlerts() {
+    // Check if emergency alerts already exist in the database
+    const existingAlerts = await readCSV<EmergencyAlert>(EMERGENCY_ALERTS_CSV_PATH);
+    if (existingAlerts.length > 0) {
+      // If we have alerts in the CSV, load those instead
+      existingAlerts.forEach(alert => {
+        this.emergencyAlerts.set(alert.id, alert);
+        if (alert.id >= this.emergencyAlertId) {
+          this.emergencyAlertId = alert.id + 1;
+        }
+      });
+      return;
+    }
+    
+    // Otherwise initialize with default alerts
     const alerts: InsertEmergencyAlert[] = [
       {
         message: "URGENT NEED: O-negative blood required at City Hospital. Contact: +1-234-567-8901",
@@ -313,23 +344,35 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    alerts.forEach(alert => {
+    for (const alert of alerts) {
       const id = this.emergencyAlertId++;
       const newAlert: EmergencyAlert = {
         ...alert,
         id,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(), // Convert Date to string
       };
       this.emergencyAlerts.set(id, newAlert);
-    });
+      
+      // Save to CSV
+      await appendToCSV(EMERGENCY_ALERTS_CSV_PATH, newAlert);
+    }
   }
   
-  private initializeDummyDonors() {
-    // Only add dummy donors if none exist
-    if (this.donors.size > 0) {
+  private async initializeDummyDonors() {
+    // Check if donors already exist in the database or in memory
+    const existingDonors = await readCSV<Donor>(DONORS_CSV_PATH);
+    if (existingDonors.length > 0 || this.donors.size > 0) {
+      // If we have donors in the CSV, load those instead
+      existingDonors.forEach(donor => {
+        this.donors.set(donor.id, donor);
+        if (donor.id >= this.donorId) {
+          this.donorId = donor.id + 1;
+        }
+      });
       return;
     }
     
+    // Otherwise initialize with dummy donors
     const dummyDonors: InsertDonor[] = [
       {
         fullName: "John Smith",
@@ -338,7 +381,7 @@ export class MemStorage implements IStorage {
         city: "New York",
         pincode: "10001",
         contactNumber: "123-456-7890",
-        lastDonationDate: new Date(2022, 11, 15),
+        lastDonationDate: new Date(2022, 11, 15).toISOString(), // Convert to string
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: false,
@@ -351,7 +394,7 @@ export class MemStorage implements IStorage {
         city: "Los Angeles",
         pincode: "90001",
         contactNumber: "213-555-1234",
-        lastDonationDate: new Date(2023, 2, 10),
+        lastDonationDate: new Date(2023, 2, 10).toISOString(),
         healthCondition: "good",
         isAvailable: true,
         isAnonymous: false,
@@ -364,7 +407,7 @@ export class MemStorage implements IStorage {
         city: "Chicago",
         pincode: "60601",
         contactNumber: "312-555-6789",
-        lastDonationDate: new Date(2023, 4, 22),
+        lastDonationDate: new Date(2023, 4, 22).toISOString(),
         healthCondition: "good",
         isAvailable: false,
         isAnonymous: false,
@@ -377,7 +420,7 @@ export class MemStorage implements IStorage {
         city: "Houston",
         pincode: "77001",
         contactNumber: "832-555-4321",
-        lastDonationDate: new Date(2023, 1, 5),
+        lastDonationDate: new Date(2023, 1, 5).toISOString(),
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: true,
@@ -390,7 +433,7 @@ export class MemStorage implements IStorage {
         city: "Phoenix",
         pincode: "85001",
         contactNumber: "602-555-8765",
-        lastDonationDate: new Date(2022, 9, 30),
+        lastDonationDate: new Date(2022, 9, 30).toISOString(),
         healthCondition: "good",
         isAvailable: true,
         isAnonymous: false,
@@ -403,7 +446,7 @@ export class MemStorage implements IStorage {
         city: "Philadelphia",
         pincode: "19019",
         contactNumber: "215-555-2468",
-        lastDonationDate: new Date(2023, 5, 12),
+        lastDonationDate: new Date(2023, 5, 12).toISOString(),
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: false,
@@ -416,7 +459,7 @@ export class MemStorage implements IStorage {
         city: "San Antonio",
         pincode: "78201",
         contactNumber: "210-555-1357",
-        lastDonationDate: new Date(2022, 7, 18),
+        lastDonationDate: new Date(2022, 7, 18).toISOString(),
         healthCondition: "good",
         isAvailable: false,
         isAnonymous: false,
@@ -442,7 +485,7 @@ export class MemStorage implements IStorage {
         city: "Dallas",
         pincode: "75201",
         contactNumber: "469-555-7531",
-        lastDonationDate: new Date(2023, 3, 25),
+        lastDonationDate: new Date(2023, 3, 25).toISOString(),
         healthCondition: "good",
         isAvailable: true,
         isAnonymous: false,
@@ -455,7 +498,7 @@ export class MemStorage implements IStorage {
         city: "San Jose",
         pincode: "95101",
         contactNumber: "408-555-8642",
-        lastDonationDate: new Date(2023, 0, 8),
+        lastDonationDate: new Date(2023, 0, 8).toISOString(),
         healthCondition: "excellent",
         isAvailable: true,
         isAnonymous: false,
@@ -463,15 +506,18 @@ export class MemStorage implements IStorage {
       }
     ];
     
-    dummyDonors.forEach(donor => {
+    for (const donor of dummyDonors) {
       const id = this.donorId++;
       const newDonor: Donor = {
         ...donor,
         id,
-        createdAt: new Date()
+        createdAt: new Date().toISOString()
       };
       this.donors.set(id, newDonor);
-    });
+      
+      // Save to CSV
+      await appendToCSV(DONORS_CSV_PATH, newDonor);
+    }
   }
   
   // User operations
