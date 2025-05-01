@@ -361,16 +361,19 @@ export class MemStorage implements IStorage {
   private async initializeDummyDonors() {
     // Check if donors already exist in the database or in memory
     const existingDonors = await readCSV<Donor>(DONORS_CSV_PATH);
-    if (existingDonors.length > 0 || this.donors.size > 0) {
-      // If we have donors in the CSV, load those instead
+    
+    // Always load existing donors from CSV if available
+    if (existingDonors.length > 0) {
       existingDonors.forEach(donor => {
         this.donors.set(donor.id, donor);
         if (donor.id >= this.donorId) {
           this.donorId = donor.id + 1;
         }
       });
-      return;
     }
+    
+    // Add dummy donors if we have fewer than 10 donors total
+    if (this.donors.size < 10) {
     
     // Otherwise initialize with dummy donors
     const dummyDonors: InsertDonor[] = [
@@ -517,6 +520,7 @@ export class MemStorage implements IStorage {
       
       // Save to CSV
       await appendToCSV(DONORS_CSV_PATH, newDonor);
+    }
     }
   }
   
