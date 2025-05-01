@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
-import { BloodRequest, insertBloodRequestSchema } from '@shared/schema';
+import { BloodRequest, insertBloodRequestSchema, Donor } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -29,9 +29,17 @@ type FormData = z.infer<typeof formSchema>;
 
 const RequestBlood: React.FC = () => {
   const { toast } = useToast();
+  const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('');
+  const [submittedForm, setSubmittedForm] = useState<boolean>(false);
   
   const { data: bloodRequests = [], isLoading } = useQuery<BloodRequest[]>({
     queryKey: ['/api/blood-requests/active'],
+  });
+  
+  // Query to fetch donors matching the selected blood group
+  const { data: matchingDonors = [], isLoading: isLoadingDonors } = useQuery<Donor[]>({
+    queryKey: ['/api/donors/filter', { bloodGroup: selectedBloodGroup }],
+    enabled: !!selectedBloodGroup && submittedForm,
   });
   
   const { register, handleSubmit, reset, control, formState: { errors, isSubmitting } } = useForm<FormData>({
@@ -52,15 +60,19 @@ const RequestBlood: React.FC = () => {
       const response = await apiRequest('POST', '/api/blood-requests', data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Request Submitted",
-        description: "Your blood request has been submitted successfully.",
+        description: "Your blood request has been submitted successfully. Matching donors are shown below.",
         variant: "default",
       });
-      reset();
+      
+      // Don't reset the form yet so the blood group selection remains
+      // We'll keep submittedForm true to display matching donors
+      
       // Invalidate queries to refresh blood requests list
       queryClient.invalidateQueries({ queryKey: ['/api/blood-requests/active'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/donors/filter'] });
     },
     onError: (error) => {
       toast({
@@ -95,7 +107,9 @@ const RequestBlood: React.FC = () => {
   });
   
   const onSubmit = async (data: FormData) => {
+    setSelectedBloodGroup(data.bloodGroup);
     await createRequest.mutate(data);
+    setSubmittedForm(true);
   };
   
   // Helper function to get urgency badge class
@@ -276,6 +290,78 @@ const RequestBlood: React.FC = () => {
               </div>
             </form>
           </div>
+
+          {submittedForm && selectedBloodGroup && (
+            <div className="mt-12 bg-white py-8 px-4 shadow-lg sm:rounded-xl border border-gray-100 sm:px-10">
+              <h3 className="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-gray-800">
+                Matching Donors ({selectedBloodGroup})
+              </h3>
+              
+              {isLoadingDonors ? (
+                <div className="mt-6 flex justify-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+                </div>
+              ) : matchingDonors.length === 0 ? (
+                <p className="mt-4 text-gray-500 text-center py-8">No matching donors found for blood group {selectedBloodGroup}.</p>
+              ) : (
+                <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {matchingDonors.map((donor) => (
+                    <div key={donor.id} className="blood-card bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-red-100">
+                      <div className="px-6 py-6 relative">
+                        <span className={`absolute right-4 top-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${donor.isAvailable ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                          {donor.isAvailable ? '🟢 Available' : '🔴 Unavailable'}
+                        </span>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-shrink-0 p-1">
+                            <BloodDropLogo size="lg" bloodType={donor.bloodGroup} animated={donor.isAvailable} />
+                          </div>
+                          <div>
+                            <h3 className="text-xl leading-6 font-semibold text-gray-900">{donor.isAnonymous ? 'Anonymous Donor' : donor.fullName}</h3>
+                            <p className="text-sm text-gray-500 mt-1"><i className="fas fa-map-marker-alt mr-1"></i> {donor.city}, {donor.pincode}</p>
+                          </div>
+                        </div>
+                        <div className="mt-5 flex justify-between items-center">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium shadow-sm ${donor.donationCount > 5 ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-blue-100 text-blue-800 border border-blue-200'}`}>
+                            {donor.donationCount > 10 ? 'Platinum Donor' : donor.donationCount > 5 ? 'Gold Donor' : donor.donationCount > 0 ? 'Regular Donor' : 'New Donor'}
+                          </span>
+                          <p className="text-sm text-gray-500">
+                            <i className="far fa-calendar-alt mr-1"></i> 
+                            {donor.lastDonationDate 
+                              ? `Last donated: ${formatDistance(new Date(donor.lastDonationDate), new Date(), { addSuffix: true })}` 
+                              : 'No previous donations'}
+                          </p>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600"><i className="fas fa-heartbeat mr-1"></i> <span className="font-medium">Health:</span> {donor.healthCondition || 'Good'}</p>
+                          <p className="text-sm text-gray-600 mt-1"><i className="fas fa-user-clock mr-1"></i> <span className="font-medium">Age:</span> {donor.age} years</p>
+                        </div>
+                      </div>
+                      <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                        <div className="flex justify-between">
+                          <a 
+                            href={`tel:${donor.contactNumber}`} 
+                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors ${donor.isAvailable ? 'text-white bg-red-600 hover:bg-red-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            aria-disabled={!donor.isAvailable}
+                            onClick={(e) => !donor.isAvailable && e.preventDefault()}
+                          >
+                            <i className="fas fa-phone-alt mr-1"></i> Call
+                          </a>
+                          <a 
+                            href={`mailto:donor@example.com?subject=Blood%20Donation%20Request&body=Hello%20${encodeURIComponent(donor.isAnonymous ? 'Donor' : donor.fullName)},%0A%0AI%20am%20in%20need%20of%20${encodeURIComponent(donor.bloodGroup)}%20blood.%20Please%20contact%20me%20if%20you%20are%20available%20to%20donate.%0A%0AThank%20you.`} 
+                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors ${donor.isAvailable ? 'text-white bg-blue-600 hover:bg-blue-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            aria-disabled={!donor.isAvailable}
+                            onClick={(e) => !donor.isAvailable && e.preventDefault()}
+                          >
+                            <i className="fas fa-envelope mr-1"></i> Email
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="mt-12">
             <h3 className="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-gray-800">Current Blood Requests</h3>
