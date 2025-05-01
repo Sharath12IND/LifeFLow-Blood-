@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import BloodDropLogo from '@/components/BloodDropLogo';
 import { formatDistance } from 'date-fns';
 import EmergencyAlert from '@/components/EmergencyAlert';
+import { FaHeartbeat, FaMapMarkerAlt, FaUserClock, FaPhone, FaEnvelope, FaHospital, FaInfoCircle, FaCheck } from 'react-icons/fa';
 
 // Extend the insertBloodRequestSchema to add validation rules
 const formSchema = insertBloodRequestSchema.extend({
@@ -294,7 +295,7 @@ const RequestBlood: React.FC = () => {
                     </span>
                   ) : (
                     <span className="flex items-center justify-center">
-                      <i className="fas fa-heartbeat mr-2"></i> Submit Blood Request
+                      <FaHeartbeat className="mr-2" /> Submit Blood Request
                     </span>
                   )}
                 </Button>
@@ -328,7 +329,7 @@ const RequestBlood: React.FC = () => {
                           </div>
                           <div>
                             <h3 className="text-xl leading-6 font-semibold text-gray-900">{donor.isAnonymous ? 'Anonymous Donor' : donor.fullName}</h3>
-                            <p className="text-sm text-gray-500 mt-1"><i className="fas fa-map-marker-alt mr-1"></i> {donor.city}, {donor.pincode}</p>
+                            <p className="text-sm text-gray-500 mt-1"><FaMapMarkerAlt className="inline mr-1" size={12} /> {donor.city}, {donor.pincode}</p>
                           </div>
                         </div>
                         <div className="mt-5 flex justify-between items-center">
@@ -352,8 +353,8 @@ const RequestBlood: React.FC = () => {
                           </p>
                         </div>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-600"><i className="fas fa-heartbeat mr-1"></i> <span className="font-medium">Health:</span> {donor.healthCondition || 'Good'}</p>
-                          <p className="text-sm text-gray-600 mt-1"><i className="fas fa-user-clock mr-1"></i> <span className="font-medium">Age:</span> {donor.age} years</p>
+                          <p className="text-sm text-gray-600"><FaHeartbeat className="inline mr-1" size={12} /> <span className="font-medium">Health:</span> {donor.healthCondition || 'Good'}</p>
+                          <p className="text-sm text-gray-600 mt-1"><FaUserClock className="inline mr-1" size={12} /> <span className="font-medium">Age:</span> {donor.age} years</p>
                         </div>
                       </div>
                       <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
@@ -364,7 +365,7 @@ const RequestBlood: React.FC = () => {
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
-                            <i className="fas fa-phone-alt mr-1"></i> Call
+                            <FaPhone className="mr-1" size={12} /> Call
                           </a>
                           <a 
                             href={`mailto:donor@example.com?subject=Blood%20Donation%20Request&body=Hello%20${encodeURIComponent(donor.isAnonymous ? 'Donor' : donor.fullName)},%0A%0AI%20am%20in%20need%20of%20${encodeURIComponent(donor.bloodGroup)}%20blood.%20Please%20contact%20me%20if%20you%20are%20available%20to%20donate.%0A%0AThank%20you.`} 
@@ -372,7 +373,7 @@ const RequestBlood: React.FC = () => {
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
-                            <i className="fas fa-envelope mr-1"></i> Email
+                            <FaEnvelope className="mr-1" size={12} /> Email
                           </a>
                         </div>
                       </div>
