@@ -176,7 +176,7 @@ const DonorDirectory: React.FC = () => {
                         <i className="fas fa-phone-alt mr-1"></i> Call
                       </a>
                       <a 
-                        href={`https://wa.me/${donor.contactNumber.replace(/\D/g, '')}`} 
+                        href={`https://wa.me/${typeof donor.contactNumber === 'string' ? donor.contactNumber.replace(/\D/g, '') : donor.contactNumber}`} 
                         className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors ${donor.isAvailable ? 'text-white bg-green-600 hover:bg-green-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
                         aria-disabled={!donor.isAvailable}
                         onClick={(e) => !donor.isAvailable && e.preventDefault()}

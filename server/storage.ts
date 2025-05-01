@@ -568,10 +568,20 @@ export class MemStorage implements IStorage {
   
   async createDonor(insertDonor: InsertDonor): Promise<Donor> {
     const id = this.donorId++;
-    const donor: Donor = {
+    
+    // Make sure optional fields have proper defaults
+    const donorData = {
       ...insertDonor,
+      lastDonationDate: insertDonor.lastDonationDate || null,
+      isAvailable: insertDonor.isAvailable !== undefined ? insertDonor.isAvailable : true,
+      isAnonymous: insertDonor.isAnonymous !== undefined ? insertDonor.isAnonymous : false,
+      donationCount: insertDonor.donationCount !== undefined ? insertDonor.donationCount : 0
+    };
+    
+    const donor: Donor = {
+      ...donorData,
       id,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(), // Convert Date to string
     };
     
     this.donors.set(id, donor);
@@ -616,11 +626,18 @@ export class MemStorage implements IStorage {
   
   async createBloodRequest(insertRequest: InsertBloodRequest): Promise<BloodRequest> {
     const id = this.bloodRequestId++;
-    const request: BloodRequest = {
+    
+    // Make sure additionalInfo is not undefined
+    const requestData = {
       ...insertRequest,
+      additionalInfo: insertRequest.additionalInfo || null
+    };
+    
+    const request: BloodRequest = {
+      ...requestData,
       id,
       isFulfilled: false,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(), // Convert Date to string
     };
     
     this.bloodRequests.set(id, request);
@@ -657,10 +674,17 @@ export class MemStorage implements IStorage {
   
   async createEmergencyAlert(insertAlert: InsertEmergencyAlert): Promise<EmergencyAlert> {
     const id = this.emergencyAlertId++;
-    const alert: EmergencyAlert = {
+    // Make sure contactNumber and isActive are not undefined
+    const alertData = {
       ...insertAlert,
+      contactNumber: insertAlert.contactNumber || null,
+      isActive: insertAlert.isActive !== undefined ? insertAlert.isActive : true
+    };
+    
+    const alert: EmergencyAlert = {
+      ...alertData,
       id,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(), // Convert Date to string
     };
     
     this.emergencyAlerts.set(id, alert);
@@ -678,10 +702,17 @@ export class MemStorage implements IStorage {
   
   async createBloodFact(insertFact: InsertBloodFact): Promise<BloodFact> {
     const id = this.bloodFactId++;
-    const fact: BloodFact = {
+    
+    // Make sure link is not undefined
+    const factData = {
       ...insertFact,
+      link: insertFact.link || null
+    };
+    
+    const fact: BloodFact = {
+      ...factData,
       id,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(), // Convert Date to string
     };
     
     this.bloodFacts.set(id, fact);
