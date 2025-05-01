@@ -113,31 +113,33 @@ const RequestBlood: React.FC = () => {
   };
   
   // Helper function to format the creation date
-  const formatCreationDate = (date: Date): string => {
-    return `Posted: ${formatDistance(new Date(date), new Date(), { addSuffix: true })}`;
+  const formatCreationDate = (date: Date | string): string => {
+    const dateObj = date instanceof Date ? date : new Date(date);
+    return `Posted: ${formatDistance(dateObj, new Date(), { addSuffix: true })}`;
   };
   
   return (
     <>
       <EmergencyAlert />
-      <section id="request-blood" className="py-16 bg-gray-50">
+      <section id="request-blood" className="py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-800">
               Request Blood
             </h2>
-            <p className="mt-4 text-lg text-gray-500 font-body">
+            <p className="mt-4 text-lg text-gray-600 font-body">
               Need blood urgently? Submit a request and we'll connect you with potential donors.
             </p>
           </div>
-          <div className="mt-12 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="mt-12 bg-white py-8 px-4 shadow-lg sm:rounded-xl border border-gray-100 sm:px-10">
+            <h3 className="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-gray-800">Submit a Blood Request</h3>
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                 <div className="sm:col-span-3">
-                  <Label htmlFor="patientName">Patient Name</Label>
+                  <Label htmlFor="patientName" className="text-gray-700">Patient Name</Label>
                   <Input 
                     id="patientName"
-                    className="mt-1"
+                    className="mt-2 shadow-sm"
                     {...register('patientName')}
                     aria-invalid={errors.patientName ? 'true' : 'false'}
                   />
@@ -147,7 +149,7 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-3">
-                  <Label htmlFor="bloodGroup">Blood Group Needed</Label>
+                  <Label htmlFor="bloodGroup" className="text-gray-700">Blood Group Needed</Label>
                   <Controller
                     control={control}
                     name="bloodGroup"
@@ -156,7 +158,7 @@ const RequestBlood: React.FC = () => {
                         onValueChange={field.onChange} 
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger id="bloodGroup" className="mt-2 shadow-sm">
                           <SelectValue placeholder="Select Blood Group" />
                         </SelectTrigger>
                         <SelectContent>
@@ -178,10 +180,10 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-3">
-                  <Label htmlFor="hospitalName">Hospital Name</Label>
+                  <Label htmlFor="hospitalName" className="text-gray-700">Hospital Name</Label>
                   <Input 
                     id="hospitalName"
-                    className="mt-1"
+                    className="mt-2 shadow-sm"
                     {...register('hospitalName')}
                     aria-invalid={errors.hospitalName ? 'true' : 'false'}
                   />
@@ -191,10 +193,10 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-3">
-                  <Label htmlFor="hospitalLocation">Hospital Location</Label>
+                  <Label htmlFor="hospitalLocation" className="text-gray-700">Hospital Location</Label>
                   <Input 
                     id="hospitalLocation"
-                    className="mt-1"
+                    className="mt-2 shadow-sm"
                     {...register('hospitalLocation')}
                     aria-invalid={errors.hospitalLocation ? 'true' : 'false'}
                   />
@@ -204,10 +206,10 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-3">
-                  <Label htmlFor="contactNumber">Contact Number</Label>
+                  <Label htmlFor="contactNumber" className="text-gray-700">Contact Number</Label>
                   <Input 
                     id="contactNumber"
-                    className="mt-1"
+                    className="mt-2 shadow-sm"
                     {...register('contactNumber')}
                     aria-invalid={errors.contactNumber ? 'true' : 'false'}
                   />
@@ -217,7 +219,7 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-3">
-                  <Label htmlFor="urgency">Urgency Level</Label>
+                  <Label htmlFor="urgency" className="text-gray-700">Urgency Level</Label>
                   <Controller
                     control={control}
                     name="urgency"
@@ -226,7 +228,7 @@ const RequestBlood: React.FC = () => {
                         onValueChange={field.onChange} 
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger id="urgency" className="mt-2 shadow-sm">
                           <SelectValue placeholder="Select Urgency Level" />
                         </SelectTrigger>
                         <SelectContent>
@@ -243,10 +245,10 @@ const RequestBlood: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-6">
-                  <Label htmlFor="additionalInfo">Additional Information</Label>
+                  <Label htmlFor="additionalInfo" className="text-gray-700">Additional Information</Label>
                   <Textarea 
                     id="additionalInfo"
-                    className="mt-1"
+                    className="mt-2 shadow-sm"
                     {...register('additionalInfo')}
                     rows={3}
                   />
@@ -308,7 +310,7 @@ const RequestBlood: React.FC = () => {
                           <i className="fas fa-phone-alt mr-1"></i> Call
                         </a>
                         <a 
-                          href={`https://wa.me/${request.contactNumber.replace(/\D/g, '')}`} 
+                          href={`https://wa.me/${typeof request.contactNumber === 'string' ? request.contactNumber.replace(/\D/g, '') : request.contactNumber}`} 
                           className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                           target="_blank"
                           rel="noopener noreferrer"
