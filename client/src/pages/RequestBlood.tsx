@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import BloodDropLogo from '@/components/BloodDropLogo';
 import { formatDistance } from 'date-fns';
 import EmergencyAlert from '@/components/EmergencyAlert';
-import { FaHeartbeat, FaMapMarkerAlt, FaUserClock, FaPhone, FaEnvelope, FaHospital, FaInfoCircle, FaCheck } from 'react-icons/fa';
+import { FaHeartbeat, FaMapMarkerAlt, FaUserClock, FaPhone, FaEnvelope, FaHospital, FaInfoCircle, FaCheck, FaWhatsapp, FaCalendarAlt } from 'react-icons/fa';
 
 // Extend the insertBloodRequestSchema to add validation rules
 const formSchema = insertBloodRequestSchema.extend({
@@ -337,7 +337,7 @@ const RequestBlood: React.FC = () => {
                             {donor.donationCount > 10 ? 'Platinum Donor' : donor.donationCount > 5 ? 'Gold Donor' : donor.donationCount > 0 ? 'Regular Donor' : 'New Donor'}
                           </span>
                           <p className="text-sm text-gray-500">
-                            <i className="far fa-calendar-alt mr-1"></i> 
+                            <FaCalendarAlt className="inline mr-1" size={12} /> 
                             {donor.lastDonationDate 
                               ? (() => {
                                   try {
@@ -358,10 +358,10 @@ const RequestBlood: React.FC = () => {
                         </div>
                       </div>
                       <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                        <div className="flex justify-between">
+                        <div className="flex justify-center gap-3">
                           <a 
                             href={`tel:${donor.contactNumber}`} 
-                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors ${donor.isAvailable ? 'text-white bg-red-600 hover:bg-red-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-32 justify-center ${donor.isAvailable ? 'text-white bg-red-600 hover:bg-red-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
@@ -369,7 +369,7 @@ const RequestBlood: React.FC = () => {
                           </a>
                           <a 
                             href={`mailto:donor@example.com?subject=Blood%20Donation%20Request&body=Hello%20${encodeURIComponent(donor.isAnonymous ? 'Donor' : donor.fullName)},%0A%0AI%20am%20in%20need%20of%20${encodeURIComponent(donor.bloodGroup)}%20blood.%20Please%20contact%20me%20if%20you%20are%20available%20to%20donate.%0A%0AThank%20you.`} 
-                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors ${donor.isAvailable ? 'text-white bg-blue-600 hover:bg-blue-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
+                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-32 justify-center ${donor.isAvailable ? 'text-white bg-blue-600 hover:bg-blue-700' : 'text-gray-500 bg-gray-200 cursor-not-allowed'}`}
                             aria-disabled={!donor.isAvailable}
                             onClick={(e) => !donor.isAvailable && e.preventDefault()}
                           >
@@ -411,7 +411,7 @@ const RequestBlood: React.FC = () => {
                         </div>
                       </div>
                       <div className="mt-5">
-                        <p className="text-sm text-gray-600"><i className="far fa-calendar-alt mr-1"></i> {formatCreationDate(request.createdAt)}</p>
+                        <p className="text-sm text-gray-600"><FaCalendarAlt className="inline mr-1" size={12} /> {formatCreationDate(request.createdAt)}</p>
                         
                         {request.additionalInfo && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-md border border-gray-100">
@@ -421,25 +421,25 @@ const RequestBlood: React.FC = () => {
                       </div>
                     </div>
                     <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                      <div className="flex justify-between">
+                      <div className="flex justify-center gap-3">
                         <a 
                           href={`tel:${request.contactNumber}`} 
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-red-600 hover:bg-red-700"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-red-600 hover:bg-red-700"
                         >
                           <FaPhone className="mr-1" size={12} /> Call
                         </a>
                         <a 
                           href={`https://wa.me/${typeof request.contactNumber === 'string' ? request.contactNumber.replace(/\D/g, '') : request.contactNumber}`} 
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-green-600 hover:bg-green-700"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-green-600 hover:bg-green-700"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <i className="fab fa-whatsapp mr-1"></i> WhatsApp
+                          <FaWhatsapp className="mr-1" size={12} /> WhatsApp
                         </a>
                         <button 
                           type="button" 
                           onClick={() => fulfillRequest.mutate(request.id)}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors text-white bg-blue-600 hover:bg-blue-700"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm transition-colors w-28 justify-center text-white bg-blue-600 hover:bg-blue-700"
                         >
                           <FaCheck className="mr-1" size={12} /> Fulfilled
                         </button>
