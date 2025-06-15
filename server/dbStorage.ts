@@ -32,11 +32,12 @@ export class DatabaseStorage implements IStorage {
       
     } catch (error) {
       console.error('Error initializing database:', error);
+      throw error;
     }
   }
   
   private async initializeBloodFacts() {
-    const facts = [
+    const facts: InsertBloodFact[] = [
       {
         title: "Blood Types Compatibility",
         content: "O- is the universal donor and AB+ is the universal recipient. Learn about other compatibilities.",
@@ -75,13 +76,11 @@ export class DatabaseStorage implements IStorage {
       },
     ];
     
-    for (const fact of facts) {
-      await db.insert(bloodFacts).values(fact);
-    }
+    await db.insert(bloodFacts).values(facts);
   }
   
   private async initializeEmergencyAlerts() {
-    const alerts = [
+    const alerts: InsertEmergencyAlert[] = [
       {
         message: "URGENT NEED: O-negative blood required at City Hospital. Contact: +1-234-567-8901",
         contactNumber: "+1-234-567-8901",
@@ -89,15 +88,13 @@ export class DatabaseStorage implements IStorage {
       }
     ];
     
-    for (const alert of alerts) {
-      await db.insert(emergencyAlerts).values(alert);
-    }
+    await db.insert(emergencyAlerts).values(alerts);
   }
   
   private async initializeDummyDonors() {
-    const dummyDonors = [
+    const dummyDonors: InsertDonor[] = [
       {
-        fullName: "John Smith",
+        fullName: "Nitish Kumar",
         age: 28,
         bloodGroup: "O+",
         city: "New York",
@@ -110,7 +107,7 @@ export class DatabaseStorage implements IStorage {
         donationCount: 5,
       },
       {
-        fullName: "Emma Johnson",
+        fullName: "Sharath Bandaari",
         age: 32,
         bloodGroup: "A-",
         city: "Los Angeles",
@@ -123,8 +120,8 @@ export class DatabaseStorage implements IStorage {
         donationCount: 3,
       },
       {
-        fullName: "Michael Williams",
-        age: 45,
+        fullName: "Archanamma",
+        age: 145,
         bloodGroup: "B+",
         city: "Chicago",
         pincode: "60601",
@@ -136,7 +133,7 @@ export class DatabaseStorage implements IStorage {
         donationCount: 12,
       },
       {
-        fullName: "Jennifer Brown",
+        fullName: "Nannna",
         age: 29,
         bloodGroup: "AB+",
         city: "Houston",
@@ -149,7 +146,7 @@ export class DatabaseStorage implements IStorage {
         donationCount: 2,
       },
       {
-        fullName: "David Jones",
+        fullName: "Karthik Reddy",
         age: 38,
         bloodGroup: "O-",
         city: "Phoenix",
@@ -163,13 +160,9 @@ export class DatabaseStorage implements IStorage {
       }
     ];
     
-    // Create dummy donors
-    for (const donor of dummyDonors) {
-      await db.insert(donors).values(donor);
-    }
+    await db.insert(donors).values(dummyDonors);
     
-    // Create a blood request
-    const bloodRequestData = {
+    const bloodRequestData: InsertBloodRequest = {
       patientName: "Sharath Bandaari",
       bloodGroup: "A+",
       hospitalName: "Apollo Hospital",
@@ -194,57 +187,69 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
   
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(insertUser).returning();
-    return result[0];
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
   }
   
   // Donor operations
   async getAllDonors(): Promise<Donor[]> {
-    return await db.select().from(donors);
+    return await db.select().from(donors).orderBy(desc(donors.createdAt));
   }
   
   async getDonor(id: number): Promise<Donor | undefined> {
-    const result = await db.select().from(donors).where(eq(donors.id, id));
-    return result[0];
+    const [donor] = await db.select().from(donors).where(eq(donors.id, id));
+    return donor;
   }
   
   async getDonorsByBloodGroup(bloodGroup: string): Promise<Donor[]> {
-    return await db.select().from(donors).where(eq(donors.bloodGroup, bloodGroup));
+    return await db.select()
+      .from(donors)
+      .where(eq(donors.bloodGroup, bloodGroup))
+      .orderBy(desc(donors.createdAt));
   }
   
   async getDonorsByCity(city: string): Promise<Donor[]> {
-    return await db.select().from(donors).where(
-      sql`LOWER(${donors.city}) LIKE LOWER(${'%' + city + '%'})`
-    );
+    return await db.select()
+      .from(donors)
+      .where(sql`LOWER(${donors.city}) LIKE LOWER(${'%' + city + '%'})`)
+      .orderBy(desc(donors.createdAt));
   }
   
   async getDonorsByAvailability(isAvailable: boolean): Promise<Donor[]> {
-    return await db.select().from(donors).where(eq(donors.isAvailable, isAvailable));
+    return await db.select()
+      .from(donors)
+      .where(eq(donors.isAvailable, isAvailable))
+      .orderBy(desc(donors.createdAt));
   }
   
-  async createDonor(insertDonor: InsertDonor): Promise<Donor> {
-    const result = await db.insert(donors).values(insertDonor).returning();
-    return result[0];
+  async createDonor(donorData: InsertDonor): Promise<Donor> {
+    const [donor] = await db.insert(donors).values(donorData).returning();
+    return donor;
   }
   
   async updateDonor(id: number, updates: Partial<Donor>): Promise<Donor | undefined> {
-    const result = await db.update(donors)
+    const [donor] = await db.update(donors)
       .set(updates)
       .where(eq(donors.id, id))
       .returning();
     
-    return result[0];
+    return donor;
   }
   
   // Blood request operations
   async getAllBloodRequests(): Promise<BloodRequest[]> {
-    return await db.select().from(bloodRequests).orderBy(desc(bloodRequests.createdAt));
+    return await db.select()
+      .from(bloodRequests)
+      .orderBy(desc(bloodRequests.createdAt));
   }
   
   async getBloodRequest(id: number): Promise<BloodRequest | undefined> {
-    const result = await db.select().from(bloodRequests).where(eq(bloodRequests.id, id));
-    return result[0];
+    const [request] = await db.select()
+      .from(bloodRequests)
+      .where(eq(bloodRequests.id, id));
+    
+    return request;
   }
   
   async getActiveBloodRequests(): Promise<BloodRequest[]> {
@@ -254,25 +259,25 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(bloodRequests.createdAt));
   }
   
-  async createBloodRequest(insertRequest: InsertBloodRequest): Promise<BloodRequest> {
-    // Make sure additionalInfo is not undefined
-    const requestData = {
-      ...insertRequest,
-      additionalInfo: insertRequest.additionalInfo || null,
-      isFulfilled: false
-    };
+  async createBloodRequest(requestData: InsertBloodRequest): Promise<BloodRequest> {
+    const [request] = await db.insert(bloodRequests)
+      .values({
+        ...requestData,
+        additionalInfo: requestData.additionalInfo || null,
+        isFulfilled: false
+      })
+      .returning();
     
-    const result = await db.insert(bloodRequests).values(requestData).returning();
-    return result[0];
+    return request;
   }
   
   async markBloodRequestFulfilled(id: number): Promise<BloodRequest | undefined> {
-    const result = await db.update(bloodRequests)
+    const [request] = await db.update(bloodRequests)
       .set({ isFulfilled: true })
       .where(eq(bloodRequests.id, id))
       .returning();
     
-    return result[0];
+    return request;
   }
   
   // Emergency alert operations
@@ -283,18 +288,26 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(emergencyAlerts.createdAt));
   }
   
-  async createEmergencyAlert(insertAlert: InsertEmergencyAlert): Promise<EmergencyAlert> {
-    const result = await db.insert(emergencyAlerts).values(insertAlert).returning();
-    return result[0];
+  async createEmergencyAlert(alertData: InsertEmergencyAlert): Promise<EmergencyAlert> {
+    const [alert] = await db.insert(emergencyAlerts)
+      .values(alertData)
+      .returning();
+    
+    return alert;
   }
   
   // Blood facts operations
   async getAllBloodFacts(): Promise<BloodFact[]> {
-    return await db.select().from(bloodFacts);
+    return await db.select()
+      .from(bloodFacts)
+      .orderBy(desc(bloodFacts.createdAt));
   }
   
-  async createBloodFact(insertFact: InsertBloodFact): Promise<BloodFact> {
-    const result = await db.insert(bloodFacts).values(insertFact).returning();
-    return result[0];
+  async createBloodFact(factData: InsertBloodFact): Promise<BloodFact> {
+    const [fact] = await db.insert(bloodFacts)
+      .values(factData)
+      .returning();
+    
+    return fact;
   }
 }

@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "noEmit": false,
+      "outDir": "./dist",
+      "module": "commonjs",
+      "target": "ES6",
+      "rootDir": "./server"
+    },
+    "include": ["server"]
+  }
+  

@@ -383,7 +383,7 @@ export class MemStorage implements IStorage {
       // Initialize with dummy donors
       const dummyDonors: InsertDonor[] = [
       {
-        fullName: "John Smith",
+        fullName: "Sharath Bandaari",
         age: 28,
         bloodGroup: "O+",
         city: "New York",
@@ -396,7 +396,7 @@ export class MemStorage implements IStorage {
         donationCount: 5
       },
       {
-        fullName: "Emma Johnson",
+        fullName: "Charan Reddy",
         age: 32,
         bloodGroup: "A-",
         city: "Los Angeles",
@@ -409,7 +409,7 @@ export class MemStorage implements IStorage {
         donationCount: 3
       },
       {
-        fullName: "Michael Williams",
+        fullName: "Nandini",
         age: 45,
         bloodGroup: "B+",
         city: "Chicago",
@@ -422,7 +422,7 @@ export class MemStorage implements IStorage {
         donationCount: 12
       },
       {
-        fullName: "Jennifer Brown",
+        fullName: "Praveena",
         age: 29,
         bloodGroup: "AB+",
         city: "Houston",
@@ -435,7 +435,7 @@ export class MemStorage implements IStorage {
         donationCount: 2
       },
       {
-        fullName: "David Jones",
+        fullName: "David Reddy",
         age: 38,
         bloodGroup: "O-",
         city: "Phoenix",
@@ -448,7 +448,7 @@ export class MemStorage implements IStorage {
         donationCount: 8
       },
       {
-        fullName: "Sarah Garcia",
+        fullName: "Virat Kohli",
         age: 26,
         bloodGroup: "A+",
         city: "Philadelphia",
@@ -461,7 +461,7 @@ export class MemStorage implements IStorage {
         donationCount: 4
       },
       {
-        fullName: "Thomas Martinez",
+        fullName: "Krish Gupta",
         age: 41,
         bloodGroup: "B-",
         city: "San Antonio",
@@ -474,7 +474,7 @@ export class MemStorage implements IStorage {
         donationCount: 6
       },
       {
-        fullName: "Jessica Robinson",
+        fullName: "Eshanth",
         age: 33,
         bloodGroup: "AB-",
         city: "San Diego",
@@ -500,7 +500,7 @@ export class MemStorage implements IStorage {
         donationCount: 7
       },
       {
-        fullName: "Ashley Rodriguez",
+        fullName: "Arun yadav",
         age: 27,
         bloodGroup: "A+",
         city: "San Jose",

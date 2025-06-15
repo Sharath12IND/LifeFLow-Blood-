@@ -10,3 +10,4 @@ fullName,age,bloodGroup,city,pincode,contactNumber,lastDonationDate,healthCondit
 "Jessica Robinson","33","AB-","San Diego","92101","619-555-3690",,"excellent","true","true","0","19","2025-05-01T05:07:00.871Z"
 "Daniel Clark","35","O+","Dallas","75201","469-555-7531","2023-04-25T00:00:00.000Z","good","true","false","7","20","2025-05-01T05:07:00.872Z"
 "Ashley Rodriguez","27","A+","San Jose","95101","408-555-8642","2023-01-08T00:00:00.000Z","excellent","true","false","1","21","2025-05-01T05:07:00.872Z"
+"Nitish","23","A-","Hyderabad","509001","9392704348","2025-05-03","fair","true","true","0","20","2025-05-01T13:54:36.161Z"
